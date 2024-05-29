@@ -1,37 +1,39 @@
 from datetime import datetime, UTC
 from math import floor
 
-WINDOW_THRESHOLD = 1000
-
 class PopPricer:
-  def __init__(self, start_price, max_price, reset_interval_seconds):
+  def __init__(self, start_price, max_price, reset_rate=0.05, cost_weight=0.001):
     """
     """
     self._start_price = start_price
     self._max_price = max_price
-    self._reset_interval_seconds = reset_interval_seconds or 1800 # every 30 mins
+    self._cost_weight = cost_weight
+    self._reset_rate = reset_rate
     self._last_cost = None
     self._cost = 0
-    self._cost_queue = []
 
   def peek(self):
-    return self._calculate_price()
+    return self._push_cost(0)
 
   def push(self, cost):
-    return self._calculate_price(cost)
+    return self._push_cost(cost)
 
-  def _calculate_price(self, additional_cost=0):
+  def _push_cost(self, cost):
     """
     Fetch current surge price according to sliding window, optionally incurring a new cost
     """
-    self._pop_costs_to_timestamp(datetime.now(UTC))
-    self._push_cost(additional_cost)
+    if self._last_cost:
+      delta = datetime.now(UTC) - self._last_cost
+      self._cost = max(self._cost - delta.total_seconds() * self._reset_rate, 0)
+    
+    self._last_cost = datetime.now(UTC)
+    if cost:
+      self._cost += cost
 
-    calculation = self._round_price(self._current_multiplier() * self._start_price)
+    current_multiplier = 1 + self._cost * self._cost_weight
+    calculation = self._round_price(current_multiplier * self._start_price)
+    # TODO allow dip below
     return min(max(calculation, self._start_price), self._max_price)
-
-  def _current_multiplier(self):
-    return 1 + self._cost / WINDOW_THRESHOLD
   
   def _round_price(self, price):
     dec = price % 1
@@ -42,36 +44,4 @@ class PopPricer:
     else:
       return floor(price) + 0.99
 
-  def _pop_costs_to_timestamp(self, timestamp):
-    """
-    Clears the incurred surge cost based on sliding window progress (reset interval)
-    """
-    delta = datetime.now(UTC) - timestamp
-    delta_mins = delta.days * 24 * 60 + delta.mins + delta.seconds / 60
-    
-    # if not self._cost_queue:
-    #   return
-    
-    # now = datetime.now(UTC)
-    # while self._cost_queue:
-    #   top_time, top_cost = self._cost_queue[0]
-    #   delta = (now - top_time).seconds
-    #   if delta >= self._reset_interval_seconds:
-    #     self._cost = max(0, self._cost - top_cost)
-    #     self._cost_queue.pop(0)
-    #   else:
-    #     break
-
-  def _push_cost(self, cost):
-    """
-    Tracks an additional cost and associated timestamp
-    """
-    self._cost += cost
-    self._last_cost = datetime.now(UTC)
-    # self._cost_queue.append(
-    #   (
-    #     datetime.now(UTC),
-    #     cost
-    #   )
-    # )  
 
