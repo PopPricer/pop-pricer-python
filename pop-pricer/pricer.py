@@ -13,9 +13,15 @@ class PopPricer:
     self._cost = 0
 
   def peek(self):
+    """
+    Check current price without increasing it
+    """
     return self._push_cost(0)
 
   def push(self, cost):
+    """
+    Check current price for a given cost, to be combined with the cost weight as a multiplier of original price
+    """
     return self._push_cost(cost)
 
   def _push_cost(self, cost):
@@ -35,6 +41,9 @@ class PopPricer:
     return min(max(calculation, self._start_price), self._max_price)
   
   def _round_price(self, price):
+    """
+    Round price to nearest displayable price (X.99, X.49, X.99)
+    """
     dec = price % 1
     if dec < 0.25:
       return round(price) - 0.01
