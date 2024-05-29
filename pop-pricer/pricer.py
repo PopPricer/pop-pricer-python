@@ -32,7 +32,6 @@ class PopPricer:
 
     current_multiplier = 1 + self._cost * self._cost_weight
     calculation = self._round_price(current_multiplier * self._start_price)
-    # TODO allow dip below
     return min(max(calculation, self._start_price), self._max_price)
   
   def _round_price(self, price):
