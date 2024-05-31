@@ -3,7 +3,7 @@ from math import floor
 import json
 
 class Pricer:
-  def __init__(self, start_price, max_price, reset_rate=0.05, cost_weight=0.001):
+  def __init__(self, start_price, max_price, reset_rate=0.5, cost_weight=0.01):
     """
     """
     self._start_price = start_price
@@ -75,7 +75,6 @@ class Pricer:
     @staticmethod
     def deserialize(str):
       try:
-        data = json.loads(str)
         p = Pricer(data['_start_price'], data['_max_price'], data['_reset_rate'], data['_cost_weight'])
         p._last_cost = data['_last_cost'] and datetime.fromisoformat(data['_last_cost'])
         p._cost = data['_cost']
