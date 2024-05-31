@@ -77,7 +77,8 @@ class Pricer:
       try:
         data = json.loads(str)
         p = Pricer(data['_start_price'], data['_max_price'], data['_reset_rate'], data['_cost_weight'])
-        p._last_cost = data['_last_cost']
+        p._last_cost = data['_last_cost'] and datetime.fromisoformat(data['_last_cost'])
         p._cost = data['_cost']
-      except:
+        return p
+      except json.decoder.JSONDecodeError:
         return None
