@@ -1,61 +1,16 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
+[tool.poetry]
 name = "pop-pricer"
-dynamic = ["version"]
-description = 'Dynamic Pricing Algorithm'
-readme = "README.md"
-requires-python = ">=3.8"
+version = "0.1.0"
+description = "Dynamic Pricing Algorithm"
+authors = ["David LoBosco <5651124+dqlobo@users.noreply.github.com>"]
 license = "AGPL-3.0-only"
-keywords = []
-authors = [
-  { name = "David LoBosco", email = "5651124+dqlobo@users.noreply.github.com" },
-]
-classifiers = [
-  "Development Status :: 4 - Beta",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
-]
-dependencies = []
+readme = "README.md"
 
-[project.urls]
-Documentation = "https://github.com/David LoBosco/pop-pricer#readme"
-Issues = "https://github.com/David LoBosco/pop-pricer/issues"
-Source = "https://github.com/David LoBosco/pop-pricer"
+[tool.poetry.dependencies]
+python = "^3.10"
+pytest = "^8.2.1"
 
-[tool.hatch.version]
-path = "src/pop_pricer/__about__.py"
 
-[tool.hatch.envs.types]
-extra-dependencies = [
-  "mypy>=1.0.0",
-]
-[tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive {args:src/pop_pricer tests}"
-
-[tool.coverage.run]
-source_pkgs = ["pop_pricer", "tests"]
-branch = true
-parallel = true
-omit = [
-  "src/pop_pricer/__about__.py",
-]
-
-[tool.coverage.paths]
-pop_pricer = ["src/pop_pricer", "*/pop-pricer/src/pop_pricer"]
-tests = ["tests", "*/pop-pricer/tests"]
-
-[tool.coverage.report]
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
