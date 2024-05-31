@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = 'Dynamic Pricing Algorithm'
 readme = "README.md"
 requires-python = ">=3.8"
-license = "MIT"
+license = "AGPL-3.0-only"
 keywords = []
 authors = [
   { name = "David LoBosco", email = "5651124+dqlobo@users.noreply.github.com" },
